@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neo-black: rgb(0, 0, 0);
+  --color-neo-white: rgb(255, 255, 255);
+  --color-neo-red: rgb(255, 82, 82);
+  --color-neo-blue: rgb(82, 82, 255);
+  --color-neo-yellow: rgb(255, 255, 82);
+  --color-neo-green: rgb(82, 255, 82);
+  --color-neo-pink: rgb(255, 166, 246);
+  --color-neo-cyan: rgb(166, 255, 246);
+  --color-neo-orange: rgb(255, 166, 82);
+  --color-neo-purple: rgb(165, 180, 251);
+
+  --color-neo-gray-100: rgb(245, 245, 245);
+  --color-neo-gray-200: rgb(229, 229, 229);
+  --color-neo-gray-300: rgb(212, 212, 212);
+  --color-neo-gray-400: rgb(163, 163, 163);
+  --color-neo-gray-500: rgb(115, 115, 115);
+  --color-neo-gray-600: rgb(82, 82, 82);
+  --color-neo-gray-700: rgb(64, 64, 64);
+  --color-neo-gray-800: rgb(38, 38, 38);
+  --color-neo-gray-900: rgb(23, 23, 23);
+
+  --font-family-neo: "Courier New", monospace;
+  --font-family-neo-bold: "Impact", "Arial Black", sans-serif;
+
+  --shadow-neo: 4px 4px 0px 0px rgb(0, 0, 0);
+  --shadow-neo-lg: 8px 8px 0px 0px rgb(0, 0, 0);
+  --shadow-neo-xl: 12px 12px 0px 0px rgb(0, 0, 0);
+  --shadow-neo-inner: inset 2px 2px 0px 0px rgb(0, 0, 0);
+
+  --border-width-neo: 3px;
+  --border-radius-neo: 0px;
+
+  --spacing-neo: 4px;
+  --spacing-neo-lg: 8px;
+  --spacing-neo-xl: 12px;
+}
+
+.neo-brutal {
+  font-family: "Courier New", monospace;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+.neo-brutal * {
+  box-sizing: border-box;
+}
+
+/* Automatic contrast for all neo background colors */
+.bg-neo-yellow,
+.bg-neo-green,
+.bg-neo-pink {
+  color: rgb(0, 0, 0);
+}
+
+.bg-neo-red,
+.bg-neo-blue,
+.bg-neo-purple,
+.bg-neo-cyan,
+.bg-neo-orange {
+  color: rgb(255, 255, 255);
+}
+
+.btn-neo {
+  @apply border-neo border-neo-black shadow-neo;
+  @apply px-neo-lg py-neo font-bold uppercase;
+  @apply transition-all duration-200 ease-out;
+  @apply hover:translate-x-1 hover:translate-y-1 hover:shadow-none cursor-pointer;
+  @apply active:translate-x-0 active:translate-y-0 active:shadow-neo-inner;
+  font-family: "Courier New", monospace;
+}
+
+.btn-neo-secondary {
+  @apply bg-neo-purple;
+}
+
+.btn-neo-primary {
+  @apply bg-neo-pink;
+}
+
+.btn-neo-danger {
+  @apply bg-neo-red;
+}
+
+.btn-neo-success {
+  @apply bg-neo-green;
+}
+
+.card-neo {
+  @apply bg-neo-white border-neo border-neo-black shadow-neo;
+  @apply p-neo-lg;
+}
+
+.input-neo {
+  @apply bg-neo-white border-neo border-neo-black shadow-neo-inner;
+  @apply px-neo py-neo;
+  @apply focus:outline-none focus:ring-2 focus:ring-neo-blue;
+  font-family: "Courier New", monospace;
+}
+
+.text-neo-title {
+  @apply text-4xl uppercase tracking-wider font-bold;
+  font-family: "Impact", "Arial Black", sans-serif;
+}
+
+.text-neo-heading {
+  @apply text-2xl uppercase tracking-wide font-bold;
+  font-family: "Impact", "Arial Black", sans-serif;
+}
+
+.text-neo-body {
+  @apply text-base;
+  font-family: "Courier New", monospace;
+}
+
+.container-neo {
+  @apply max-w-6xl mx-auto px-neo-lg;
+}
+
+.section-neo {
+  @apply py-neo-xl;
+}
