@@ -2,35 +2,32 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
 
-interface AlertProps {
+type AlertProps = {
   type: "error" | "success";
   title?: string;
   message: string;
-  onClose?: () => void;
   autoClose?: boolean;
   autoCloseDelay?: number;
-}
+};
 
 export const Alert: React.FC<AlertProps> = ({
   type,
   title,
   message,
-  onClose,
   autoClose = true,
   autoCloseDelay = 5000,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (!autoClose || !onClose) return;
+    if (!autoClose) return;
 
     const timeoutId = setTimeout(() => {
       setIsVisible(false);
-      onClose();
     }, autoCloseDelay);
 
     return () => clearTimeout(timeoutId);
-  }, [autoClose, autoCloseDelay, onClose]);
+  }, [autoClose, autoCloseDelay]);
 
   const alertStyles = {
     error:

@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger" | "success";
+  variant?: "primary" | "secondary" | "danger" | "success" | "ghost";
   children: React.ReactNode;
 }
 
@@ -16,6 +16,7 @@ export const Button: React.FC<ButtonProps> = ({
     secondary: "btn-neo btn-neo-secondary",
     danger: "btn-neo btn-neo-danger",
     success: "btn-neo btn-neo-success",
+    ghost: "btn-neo",
   };
 
   return (

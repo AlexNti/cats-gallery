@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/button";
 
-interface ErrorProps {
+type ErrorProps = {
   title?: string;
   message?: string;
   children?: React.ReactNode;
-}
+};
 
 export const ErrorAction = ({
   action,

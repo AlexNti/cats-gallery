@@ -1,0 +1,239 @@
+"use client";
+
+import { Modal } from "@/components/modal";
+import { CatImage, Breed } from "@/types";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { StarRating } from "@/components/starsRating";
+import { IconButton } from "@/components/iconButton";
+import { useFetch } from "@/hooks/useFetch";
+import {
+  addCatToFavorites,
+  deleteCatFromFavorites,
+  getIsCatFavorited,
+} from "@/app/_api";
+import { useCallback, useState, useEffect } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import Link from "next/link";
+
+const BreedCard = ({ breed }: { breed: Breed }) => {
+  const physicalTraits = [
+    { key: "weight", label: "Weight", value: `${breed.weight.metric}kg` },
+    { key: "life_span", label: "Life Span", value: `${breed.life_span}y` },
+    { key: "origin", label: "Origin", value: breed.origin },
+  ];
+
+  const personalityHealth = [
+    {
+      key: "child_friendly",
+      label: "Child Friendly",
+      value: breed.child_friendly,
+      isRating: true,
+    },
+    {
+      key: "health_issues",
+      label: "Health Issues",
+      value: breed.health_issues,
+      isRating: true,
+    },
+    {
+      key: "energy_level",
+      label: "Energy Level",
+      value: breed.energy_level,
+      isRating: true,
+    },
+    {
+      key: "intelligence",
+      label: "Intelligence",
+      value: breed.intelligence,
+      isRating: true,
+    },
+  ];
+
+  return (
+    <div className="mb-neo-lg border-neo border-neo-black bg-neo-white shadow-neo">
+      <div className="bg-neo-blue text-neo-white p-neo-lg border-b-2 border-neo-black">
+        <Link href={`/breeds/${breed.id}`}>
+          <h4 className="text-neo-heading">{breed.name}</h4>
+        </Link>
+      </div>
+
+      <div className="p-neo-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-neo-xl">
+          <div className="space-y-neo">
+            <h5 className="text-neo-body font-bold text-neo-black uppercase tracking-wide border-b border-neo-black pb-neo">
+              Physical Traits
+            </h5>
+            <div className="space-y-neo-sm">
+              {physicalTraits.map((item) => (
+                <div
+                  key={item.key}
+                  className="flex justify-between items-center py-neo-sm border-b border-neo-gray-200 last:border-b-0"
+                >
+                  <span className="text-sm text-neo-gray-600 font-bold uppercase tracking-wide">
+                    {item.label}:
+                  </span>
+                  <span className="text-neo-body text-neo-black font-medium">
+                    {item.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-neo">
+            <h5 className="text-neo-body font-bold text-neo-black uppercase tracking-wide border-b border-neo-black pb-neo">
+              Personality & Health
+            </h5>
+            <div className="space-y-neo-sm">
+              {personalityHealth.map((item) => (
+                <div
+                  key={item.key}
+                  className="flex justify-between items-center py-neo-sm border-b border-neo-gray-200 last:border-b-0"
+                >
+                  <span className="text-sm text-neo-gray-600 font-bold uppercase tracking-wide">
+                    {item.label}:
+                  </span>
+                  <span className="text-neo-body text-neo-black font-medium">
+                    {item.isRating ? (
+                      <StarRating value={item.value as number} />
+                    ) : (
+                      item.value
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Favorite = ({ imageId }: { imageId: string }) => {
+  const [isPerformingMutation, setIsPerformingMutation] = useState(false);
+  const [favouriteId, setFavouriteId] = useState<string | null>(null);
+  const isFavourited = favouriteId !== null;
+
+  const _getIsCatFavorited = useCallback(() => {
+    return getIsCatFavorited({
+      image_id: imageId,
+      sub_id: "user",
+      limit: 1,
+    });
+  }, [imageId]);
+
+  const { data: isFavoritedResponse, loading: isFavoritedLoading } = useFetch(
+    _getIsCatFavorited,
+    {
+      fetchOnMount: true,
+    }
+  );
+  const isLoading = isFavoritedLoading || isPerformingMutation;
+  const initialFavouriteId = isFavoritedResponse && isFavoritedResponse[0]?.id;
+
+  useEffect(() => {
+    if (initialFavouriteId) {
+      setFavouriteId(initialFavouriteId);
+    }
+  }, [initialFavouriteId]);
+
+  const toggleFavorite = useCallback(async () => {
+    setIsPerformingMutation(true);
+    try {
+      if (isFavourited) {
+        const res = await deleteCatFromFavorites({
+          favourite_id: favouriteId,
+        });
+
+        setIsPerformingMutation(false);
+
+        if (res.data?.message === "SUCCESS") {
+          setFavouriteId(null);
+        }
+        return;
+      }
+
+      const res = await addCatToFavorites({
+        image_id: imageId,
+        sub_id: "user",
+      });
+      if (res.data?.message === "SUCCESS") {
+        setFavouriteId(res.data.id);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsPerformingMutation(false);
+    }
+  }, [imageId, isFavourited, favouriteId]);
+
+  const debouncedToggleFavorite = useDebounce(toggleFavorite, 300);
+
+  return (
+    <IconButton
+      loading={isLoading}
+      disabled={isLoading}
+      icon="heart"
+      onClick={debouncedToggleFavorite}
+      aria-label={isFavourited ? "Unfavorite cat" : "Favorite cat"}
+      variant="ghost"
+      color={isFavourited ? "neo-pink" : "neo-gray-400"}
+    />
+  );
+};
+
+export const ImageDetailsModal = ({ image }: { image: CatImage }) => {
+  const router = useRouter();
+
+  const onClose = () => {
+    router.push("/", { scroll: false });
+  };
+
+  return (
+    <Modal.Root isOpen={true} onClose={onClose}>
+      <Modal.Content>
+        <Modal.Header>
+          <div className="flex items-center gap-4 w-full">
+            <Favorite imageId={image.id} />
+            <Modal.Title>Cat #{image.id}</Modal.Title>
+            <Modal.Close onClick={onClose} />
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="space-y-neo-lg">
+            <div className="relative w-full h-80 mb-neo-lg">
+              <Image
+                src={image.url}
+                alt={`Cat ${image.id}`}
+                fill
+                className="object-contain rounded-neo"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+              />
+            </div>
+
+            {image.breeds && image.breeds.length > 0 ? (
+              <div>
+                <h3 className="text-neo-heading text-neo-black mb-neo-lg border-b-2 border-neo-black pb-neo">
+                  Breed Information
+                </h3>
+                {image.breeds.map((breed) => (
+                  <BreedCard key={breed.id} breed={breed} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-neo-xl">
+                <p className="text-neo-body text-neo-gray-500">
+                  No breed information available for this cat
+                </p>
+              </div>
+            )}
+          </div>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
+  );
+};

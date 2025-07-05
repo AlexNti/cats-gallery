@@ -2,7 +2,7 @@ import { ApiSuccessOrError } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION;
-
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 export function buildUrl(
   endpoint: string,
   params?: Record<string, string | number | boolean>
@@ -21,11 +21,18 @@ export function buildUrl(
   return url.toString();
 }
 
-async function apiRequest<T>(url: string): Promise<ApiSuccessOrError<T>> {
+async function apiRequest<T>(
+  url: string,
+  requestConfig?: RequestInit
+): Promise<ApiSuccessOrError<T>> {
   const config: RequestInit = {
     headers: {
       "Content-Type": "application/json",
+      ...(API_KEY && {
+        "x-api-key": API_KEY,
+      }),
     },
+    ...requestConfig,
   };
 
   try {
@@ -62,8 +69,22 @@ async function apiRequest<T>(url: string): Promise<ApiSuccessOrError<T>> {
   }
 }
 
-export const http = {
+export const http = Object.freeze({
   async get<T>(url: string): Promise<ApiSuccessOrError<T>> {
     return apiRequest<T>(url);
   },
-};
+  async post<T, D = unknown>(
+    url: string,
+    data: D
+  ): Promise<ApiSuccessOrError<T>> {
+    return apiRequest<T>(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+  async delete<T>(url: string): Promise<ApiSuccessOrError<T>> {
+    return apiRequest<T>(url, {
+      method: "DELETE",
+    });
+  },
+});

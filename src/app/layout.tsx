@@ -6,7 +6,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scrollbar-hide">
       <body className="bg-neo-purple min-h-screen">
         <header className="bg-neo-white border-neo border-neo-black shadow-neo">
           <div className="container-neo">

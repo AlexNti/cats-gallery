@@ -2,16 +2,22 @@
 
 import { CatImage } from "@/types";
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { getCatsImagesList } from "@/app/_api";
 import { Button } from "@/components/button";
 import { useFetch } from "@/hooks/useFetch";
 import { Alert } from "@/components/alert";
-import { GET_CATS_IMAGES_LIST_LIMIT } from "@/app/(home)/_constants";
+import { GET_CATS_IMAGES_LIST_LIMIT } from "@/app/(cat-list)/_constants";
+import { useRouter } from "next/navigation";
 
 const CardItem = ({ cat }: { cat: CatImage }) => {
+  const router = useRouter();
+
   return (
-    <div className="card-neo">
+    <div
+      className="card-neo cursor-pointer"
+      onClick={() => router.push(`/?id=${cat.id}`, { scroll: false })}
+    >
       <div className="aspect-square overflow-hidden mb-neo relative">
         <Image
           src={cat.url}
@@ -59,8 +65,8 @@ export const CardList = ({ cats }: { cats: CatImage[] }) => {
         {cards.map((cat, index) => (
           /**
            * Because the cat api return randomly cats there is a change that the same cat will be returned again
-           * for that reason we are adding the index to the key. Since this list is "static" just adding new items,
-           * no reordering, filtering, or searching  using index in the key is fine.
+           * for that reason we are adding the index to the key as duplicate cats will have the same id. Since this list is "static" (just adding new items,
+           * no reordering, filtering, or searching)  using index in the key is fine.
            *
            */
           <CardItem key={`${cat.id}-${index}`} cat={cat} />

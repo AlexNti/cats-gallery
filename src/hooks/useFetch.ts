@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { ApiSuccessOrError } from "@/types";
-interface UseFetchOptions {
+
+type UseFetchOptions = {
   fetchOnMount?: boolean;
-}
+};
 
 export function useFetch<T = unknown>(
   fetchFn: () => Promise<ApiSuccessOrError<T>>,

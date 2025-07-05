@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .scrollbar-hide {
+    -webkit-scrollbar: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 @theme {
   --color-neo-black: rgb(0, 0, 0);
   --color-neo-white: rgb(255, 255, 255);
@@ -122,4 +130,21 @@
 
 .section-neo {
   @apply py-neo-xl;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+.animate-spin path {
+  animation: spin 1s linear infinite;
+  transform-origin: center;
 }
