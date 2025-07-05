@@ -29,6 +29,8 @@
   --shadow-neo-lg: 8px 8px 0px 0px rgb(0, 0, 0);
   --shadow-neo-xl: 12px 12px 0px 0px rgb(0, 0, 0);
   --shadow-neo-inner: inset 2px 2px 0px 0px rgb(0, 0, 0);
+  --shadow-neo-red: 4px 4px 0px 0px var(--color-neo-red);
+  --shadow-neo-green: 4px 4px 0px 0px var(--color-neo-green);
 
   --border-width-neo: 3px;
   --border-radius-neo: 0px;
@@ -48,7 +50,6 @@
   box-sizing: border-box;
 }
 
-/* Automatic contrast for all neo background colors */
 .bg-neo-yellow,
 .bg-neo-green,
 .bg-neo-pink {

@@ -1,0 +1,1 @@
+export const GET_CATS_IMAGES_LIST_LIMIT = 10;
