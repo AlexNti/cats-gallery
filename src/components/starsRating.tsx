@@ -16,7 +16,7 @@ export const StarRating = ({
 
   return (
     <div className="flex items-center gap-neo-sm">
-      <span className="text-neo-body text-neo-black">
+      <span className="text-base text-neo-black">
         {value}/{max}
       </span>
       <div className="flex">{stars}</div>

@@ -48,14 +48,8 @@
   --spacing-neo-xl: 12px;
 }
 
-.neo-brutal {
+* {
   font-family: "Courier New", monospace;
-  line-height: 1.2;
-  letter-spacing: 0.05em;
-}
-
-.neo-brutal * {
-  box-sizing: border-box;
 }
 
 .bg-neo-yellow,
@@ -78,6 +72,9 @@
   @apply transition-all duration-200 ease-out;
   @apply hover:translate-x-1 hover:translate-y-1 hover:shadow-none cursor-pointer;
   @apply active:translate-x-0 active:translate-y-0 active:shadow-neo-inner;
+  @apply disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-neo disabled:cursor-not-allowed;
+  @apply disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-neo;
+  @apply disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-neo;
   font-family: "Courier New", monospace;
 }
 
@@ -102,13 +99,6 @@
   @apply p-neo-lg;
 }
 
-.input-neo {
-  @apply bg-neo-white border-neo border-neo-black shadow-neo-inner;
-  @apply px-neo py-neo;
-  @apply focus:outline-none focus:ring-2 focus:ring-neo-blue;
-  font-family: "Courier New", monospace;
-}
-
 .text-neo-title {
   @apply text-4xl uppercase tracking-wider font-bold;
   font-family: "Impact", "Arial Black", sans-serif;
@@ -119,17 +109,8 @@
   font-family: "Impact", "Arial Black", sans-serif;
 }
 
-.text-neo-body {
-  @apply text-base;
-  font-family: "Courier New", monospace;
-}
-
 .container-neo {
   @apply max-w-6xl mx-auto px-neo-lg;
-}
-
-.section-neo {
-  @apply py-neo-xl;
 }
 
 @keyframes spin {

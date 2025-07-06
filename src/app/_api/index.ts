@@ -1,5 +1,5 @@
 import { http, buildUrl } from "@/utils/http";
-import { CatFavorites, CatImage } from "@/types";
+import { Breed, CatFavorites, CatImage } from "@/types";
 
 type CatImagesParams = {
   page?: number;
@@ -51,4 +51,24 @@ type CatFavoritesCheckParams = {
 export const getIsCatFavorited = async (params: CatFavoritesCheckParams) => {
   const url = buildUrl("/favourites", params);
   return http.get<CatFavorites[]>(url);
+};
+
+type GetBreedsParams = {
+  page?: number;
+  limit: number;
+};
+
+export const getBreeds = async (params: GetBreedsParams) => {
+  const url = buildUrl(`/breeds`, params);
+  return http.get<Breed[]>(url);
+};
+
+type GetImagesByBreedIdParams = {
+  breed_id: string;
+  limit?: number;
+};
+
+export const getImagesByBreedId = async (params: GetImagesByBreedIdParams) => {
+  const url = buildUrl(`/images/search`, params);
+  return http.get<CatImage[]>(url);
 };

@@ -92,7 +92,7 @@ type ModalBodyProps = {
 };
 
 const ModalBody = ({ children }: ModalBodyProps) => {
-  return <div className="text-neo-body text-neo-black">{children}</div>;
+  return <div className="text-base text-neo-black">{children}</div>;
 };
 
 type ModalCloseProps = {

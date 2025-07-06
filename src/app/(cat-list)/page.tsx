@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { GET_CATS_IMAGES_LIST_LIMIT } from "@/app/(cat-list)/_constants";
 import { Error, ErrorAction } from "@/components/server.error";
 import { ImageDetailsModal } from "@/app/(cat-list)/_components/imageDetails";
+import { PageContainer } from "@/components/pageContainer";
 
 async function retryAction() {
   "use server";
@@ -61,15 +62,11 @@ async function CatsLoader() {
   }
 
   return (
-    <div className="neo-brutal">
-      <div className="mb-neo-xl">
-        <h2 className="text-neo-heading text-neo-black mb-neo">CAT GALLERY</h2>
-        <p className="text-neo-body text-neo-black">
-          Discover amazing cats from all over the internet
-        </p>
-      </div>
-
+    <PageContainer
+      title="CAT GALLERY"
+      description="Discover amazing cats from all over the internet"
+    >
       <CardList cats={response.data} />
-    </div>
+    </PageContainer>
   );
 }

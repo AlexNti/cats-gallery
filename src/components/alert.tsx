@@ -58,7 +58,7 @@ export const Alert: React.FC<AlertProps> = ({
                 {title}
               </h3>
             )}
-            <p className="text-neo-body text-neo-black">{message}</p>
+            <p className="text-base text-neo-black">{message}</p>
           </div>
         </div>
       </div>
