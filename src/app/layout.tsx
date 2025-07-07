@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Tabs } from "@/components/tabs";
-
+import { UserInitializer } from "@/components/userInitializer";
 const tabItems = [
   {
     label: "Cat Images",
@@ -9,6 +9,10 @@ const tabItems = [
   {
     label: "Cat Breeds",
     href: "/breeds",
+  },
+  {
+    label: "Favorites",
+    href: "/favorites",
   },
 ];
 
@@ -41,6 +45,7 @@ export default function RootLayout({
             <div className="section-neo">{children}</div>
           </div>
         </main>
+        <UserInitializer />
 
         <footer className="bg-neo-black text-neo-white border-neo border-neo-white">
           <div className="container-neo">

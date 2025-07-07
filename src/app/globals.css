@@ -49,7 +49,7 @@
 }
 
 * {
-  font-family: "Courier New", monospace;
+  font-family: var(--font-family-neo);
 }
 
 .bg-neo-yellow,
@@ -75,7 +75,6 @@
   @apply disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-neo disabled:cursor-not-allowed;
   @apply disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-neo;
   @apply disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-neo;
-  font-family: "Courier New", monospace;
 }
 
 .btn-neo-secondary {
@@ -101,12 +100,12 @@
 
 .text-neo-title {
   @apply text-4xl uppercase tracking-wider font-bold;
-  font-family: "Impact", "Arial Black", sans-serif;
+  font-family: var(--font-family-neo-bold);
 }
 
 .text-neo-heading {
   @apply text-2xl uppercase tracking-wide font-bold;
-  font-family: "Impact", "Arial Black", sans-serif;
+  font-family: var(--font-family-neo-bold);
 }
 
 .container-neo {

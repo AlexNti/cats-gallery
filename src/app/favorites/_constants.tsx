@@ -1,0 +1,1 @@
+export const GET_FAVOURITE_IMAGES_LIMIT = 10;

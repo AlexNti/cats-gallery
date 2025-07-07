@@ -6,16 +6,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { StarRating } from "@/components/starsRating";
 import { IconButton } from "@/components/iconButton";
-import { useFetch } from "@/hooks/useFetch";
-import {
-  addCatToFavorites,
-  deleteCatFromFavorites,
-  getIsCatFavorited,
-} from "@/app/_api";
-import { useCallback, useState, useEffect } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
+
 import Link from "next/link";
 import { Card } from "@/components/card";
+import { useFavourite } from "@/app/favorites/_hooks/useFavourite";
+import { getUserId } from "@/app/user/_utils";
 
 const BreedCard = ({ breed }: { breed: Breed }) => {
   const physicalTraits = [
@@ -120,64 +115,11 @@ const BreedCard = ({ breed }: { breed: Breed }) => {
 };
 
 const Favorite = ({ imageId }: { imageId: string }) => {
-  const [isPerformingMutation, setIsPerformingMutation] = useState(false);
-  const [favouriteId, setFavouriteId] = useState<string | null>(null);
-  const isFavourited = favouriteId !== null;
-
-  const _getIsCatFavorited = useCallback(() => {
-    return getIsCatFavorited({
-      image_id: imageId,
-      sub_id: "user",
-      limit: 1,
-    });
-  }, [imageId]);
-
-  const { data: isFavoritedResponse, loading: isFavoritedLoading } = useFetch(
-    _getIsCatFavorited,
-    {
-      fetchOnMount: true,
-    }
-  );
-  const isLoading = isFavoritedLoading || isPerformingMutation;
-  const initialFavouriteId = isFavoritedResponse && isFavoritedResponse[0]?.id;
-
-  useEffect(() => {
-    if (initialFavouriteId) {
-      setFavouriteId(initialFavouriteId);
-    }
-  }, [initialFavouriteId]);
-
-  const toggleFavorite = useCallback(async () => {
-    setIsPerformingMutation(true);
-    try {
-      if (isFavourited) {
-        const res = await deleteCatFromFavorites({
-          favourite_id: favouriteId,
-        });
-
-        setIsPerformingMutation(false);
-
-        if (res.data?.message === "SUCCESS") {
-          setFavouriteId(null);
-        }
-        return;
-      }
-
-      const res = await addCatToFavorites({
-        image_id: imageId,
-        sub_id: "user",
-      });
-      if (res.data?.message === "SUCCESS") {
-        setFavouriteId(res.data.id);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsPerformingMutation(false);
-    }
-  }, [imageId, isFavourited, favouriteId]);
-
-  const debouncedToggleFavorite = useDebounce(toggleFavorite, 300);
+  const userId = getUserId();
+  const { isFavourited, isLoading, debouncedToggleFavorite } = useFavourite({
+    imageId,
+    subId: userId,
+  });
 
   return (
     <IconButton

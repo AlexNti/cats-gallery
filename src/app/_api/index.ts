@@ -41,14 +41,14 @@ export const deleteCatFromFavorites = async (
   return http.delete<{ message: "SUCCESS" }>(url);
 };
 
-type CatFavoritesCheckParams = {
+type GetFavouriteImagesParams = {
   limit: number;
   page?: number;
   sub_id: string;
-  image_id: string;
+  image_id?: string;
 };
 
-export const getIsCatFavorited = async (params: CatFavoritesCheckParams) => {
+export const getFavouriteImages = async (params: GetFavouriteImagesParams) => {
   const url = buildUrl("/favourites", params);
   return http.get<CatFavorites[]>(url);
 };
