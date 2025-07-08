@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/cats-gallery",
+        permanent: false, // set to true if it's a permanent redirect (like in production)
+      },
+    ];
+  },
 };
 
 export default nextConfig;

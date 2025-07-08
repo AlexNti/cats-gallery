@@ -11,6 +11,10 @@ type ModalRootProps = {
 };
 
 const ModalRoot: React.FC<ModalRootProps> = ({ isOpen, onClose, children }) => {
+  /**
+   * we need to track if the modal is mounted to make sure that we are at the cient side,
+   * other wise we are getting an error that document is not defined
+   */
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

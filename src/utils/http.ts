@@ -3,6 +3,19 @@ import { ApiSuccessOrError } from "@/types";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+type CacheOptions = "force-cache" | "no-store";
+
+type NextOptions = { tags?: string[]; revalidate?: number };
+
+type RequestConfig = {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+  cache?: CacheOptions;
+  next?: NextOptions;
+};
+
 export function buildUrl(
   endpoint: string,
   params?: Record<string, string | number | boolean>
@@ -23,17 +36,21 @@ export function buildUrl(
 
 async function apiRequest<T>(
   url: string,
-  requestConfig?: RequestInit
+  requestConfig?: RequestConfig
 ): Promise<ApiSuccessOrError<T>> {
-  const config: RequestInit = {
+  const { cache, ...fetchConfig } = requestConfig || {};
+
+  const config = {
     headers: {
       "Content-Type": "application/json",
       ...(API_KEY && {
         "x-api-key": API_KEY,
       }),
     },
-    ...requestConfig,
-  };
+    ...fetchConfig,
+
+    ...(typeof cache === "string" && { cache }),
+  } as const;
 
   try {
     const response = await fetch(url, config);
@@ -70,21 +87,32 @@ async function apiRequest<T>(
 }
 
 export const http = Object.freeze({
-  async get<T>(url: string): Promise<ApiSuccessOrError<T>> {
-    return apiRequest<T>(url);
+  async get<T>(
+    url: string,
+    { cache, next }: { cache?: CacheOptions; next?: NextOptions } = {}
+  ): Promise<ApiSuccessOrError<T>> {
+    return apiRequest<T>(url, { cache, next });
   },
   async post<T, D = unknown>(
     url: string,
-    data: D
+    data: D,
+    { cache, next }: { cache?: CacheOptions; next?: NextOptions } = {}
   ): Promise<ApiSuccessOrError<T>> {
     return apiRequest<T>(url, {
       method: "POST",
       body: JSON.stringify(data),
+      cache,
+      next,
     });
   },
-  async delete<T>(url: string): Promise<ApiSuccessOrError<T>> {
+  async delete<T>(
+    url: string,
+    { cache, next }: { cache?: CacheOptions; next?: NextOptions } = {}
+  ): Promise<ApiSuccessOrError<T>> {
     return apiRequest<T>(url, {
       method: "DELETE",
+      cache,
+      next,
     });
   },
 });

@@ -5,8 +5,8 @@ type UseFetchOptions = {
   fetchOnMount?: boolean;
 };
 
-export function useFetch<T = unknown>(
-  fetchFn: () => Promise<ApiSuccessOrError<T>>,
+export function useFetch<T = unknown, Args = unknown>(
+  fetchFn: (args: Args) => Promise<ApiSuccessOrError<T>>,
   options: UseFetchOptions = {}
 ) {
   const { fetchOnMount } = options;
@@ -19,23 +19,27 @@ export function useFetch<T = unknown>(
    */
   const isMounted = useRef<boolean>(true);
 
-  const execute = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const execute = useCallback(
+    async (args?: Args) => {
+      setLoading(true);
+      setError(null);
 
-    const result = await fetchFn();
+      const result = await fetchFn(args as Args);
 
-    if (result.error) {
-      setError(result.error.message);
-      setData(null);
-    } else {
-      if (isMounted.current) {
-        setData(result.data);
+      setLoading(false);
+
+      if (result.error) {
+        setError(result.error.message);
+        setData(null);
+      } else {
+        if (isMounted.current) {
+          setData(result.data);
+        }
       }
-    }
-    setLoading(false);
-    return { data: result.data, err: result.error };
-  }, [fetchFn]);
+      return result;
+    },
+    [fetchFn]
+  );
 
   useEffect(() => {
     isMounted.current = true;

@@ -6,6 +6,45 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+export const BreedDetailsModalSkeleton = () => {
+  const router = useRouter();
+
+  const onClose = () => {
+    router.push("/breeds", { scroll: false });
+  };
+
+  return (
+    <Modal.Root isOpen={true} onClose={onClose}>
+      <Modal.Content>
+        <Modal.Header>
+          <div className="flex items-center gap-4 w-full">
+            <div className="h-6 bg-neo-gray-200 rounded w-32 animate-pulse"></div>
+            <Modal.Close onClick={onClose} />
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="space-y-neo-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-neo-lg justify-items-center">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="relative w-full h-48 overflow-hidden border-neo border-neo-black shadow-neo bg-neo-gray-200 animate-pulse"
+                >
+                  <div className="w-full h-full bg-neo-gray-300"></div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center">
+              <div className="h-4 bg-neo-gray-200 rounded w-48 mx-auto animate-pulse"></div>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
+  );
+};
+
 export const BreedDetailsModal = ({ images }: { images: CatImage[] }) => {
   const router = useRouter();
 
@@ -30,8 +69,7 @@ export const BreedDetailsModal = ({ images }: { images: CatImage[] }) => {
               {images.map((image) => (
                 <Link
                   href={{
-                    pathname: "/",
-                    query: { id: image.id },
+                    pathname: `/cats-gallery/${image.id}`,
                   }}
                   key={image.id}
                   className="relative w-full h-48 overflow-hidden border-neo border-neo-black shadow-neo"

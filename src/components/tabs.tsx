@@ -21,7 +21,8 @@ const Tabs: React.FC<TabsProps> = ({ items, className = "" }) => {
   return (
     <div className={`flex gap-neo-sm ${className}`.trim()}>
       {items.map((item) => {
-        const isActive = pathname === item.href;
+        const isActive =
+          pathname === item.href || pathname.startsWith(item.href + "/");
 
         return (
           <Link

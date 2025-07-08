@@ -1,21 +1,154 @@
-# GlobalWebIndex Engineering Challenge
+# 🐱 Cat Lovers Gallery
 
-## Exercise: CatLover
+Welcome to **Cat Lovers Gallery** a fun and modern web app where you can:
 
-Create a React application for cat lovers which is going to build upon thecatapi.com and will have 3 views.
-The **first** view displays a list of 10 random cat images and a button to load more. Clicking on any of those images opens a modal view with the image and the information about the cat’s breed if available. This would be a link to the second view below - the breed detail. The modal should also contain a form to mark the image as your favourite (a part of the third view as well). Make sure you can copy-paste the URL of the modal and send it to your friends - they should see the same image as you can see.
+- 🖼️ View cute cat pictures
+- 📚 Learn about different cat breeds
+- ❤️ Save your favorite images
 
-The **second** view displays a list of cat breeds. Each breed opens a modal again with a list of cat images of that breed. Each of those images must be a link to the image detail from the previous point.
+This app is built with **Next.js 15**, **Tailwind CSS**, and uses a colorful **neo-brutalism** design style.
 
-The **third** view allows you do the following things:
+---
 
-- Display your favourite cats
-- Remove an image from your favourites (use any UX option you like)
+## ✨ Features
 
-You can find the API documentation here: https://developers.thecatapi.com/
-We give you a lot of freedom in technologies and ways of doing things. We only insist on you using React.js. Get creative as much as you want, we WILL appreciate it. You will not be evaluated based on how well you follow these instructions, but based on how sensible your solution will be. In case you are not able to implement something you would normally implement for time reasons, make it clear with a comment.
+- 🖼️ A gallery showing many cat images as cards
+- 🐾 Click an image to learn about the cat's breed (if available)
+- 🧠 A page showing all available cat breeds
+- 🐈 Click a breed to see only cats of that breed
+- 🔍 Click images to open a modal with more breed info
+- ❤️ View a list of your favorite cat images
 
-## Submission
+---
 
-Once you have built your app, share your code in the mean suits you best
-Good luck, potential colleague!
+## 🛠️ How to run locally
+
+1. Clone the repo and open the folder
+2. Create a `.env.local` file and add:
+
+   ```
+   NEXT_PUBLIC_API_URL=your_api_url
+   NEXT_PUBLIC_API_VERSION=your_api_version
+   NEXT_PUBLIC_API_KEY=your_api_key
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the app:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000)
+
+👉 Or try the live version: [https://courageous-trifle-f9f9db.netlify.app/](https://courageous-trifle-f9f9db.netlify.app/)
+
+---
+
+## 🗂️ Project Structure
+
+All main code is inside the `src/` folder. We split the code into two main types:
+
+### 1. General purpose code (not tied to business logic)
+
+- **`components/`** – UI parts like buttons, modals, tabs
+- **`hooks/`** – Utility hooks like `useDebounce`, `useLoadMore`
+- **`utils/`** – Shared functions like HTTP request helpers
+
+> These folders are **generic** and should **not import anything from the `app/` folder**. If you need to, consider moving the logic into the app instead.
+
+---
+
+### 2. Business logic (inside the `app/` folder)
+
+This follows the **Next.js 15 app router structure**.
+
+Each folder represents a page or feature, like a module.  
+Main folders:
+
+- `breeds/` – Shows breed list and details
+- `cats-gallery/` – Shows all cat images
+- `favourites/` – Shows favorite images
+- `user/` – Handles fake login
+- `_api/` – Contains server actions
+
+Each module can include:
+
+- `_components/` – Components for that module's UI
+- `_hooks/` – Hooks for that module's logic
+- `_constants/` – Static values like API limits
+- `@modal/` – Nested modal routes
+- `default.tsx` – Used for parallel routes, more at [Parallel Routes](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes)
+- `page.tsx` – The server-rendered page built using the module's components
+
+These modules **can share logic with each other** if needed.  
+For example, a hook in `breeds/` can be used in `cats-gallery/`.
+
+---
+
+## 🧠 Best practices
+
+- Keep the components as closer to where the going to be consumed, if lets say you have a list component an a list item those components should stay in the same file.
+- Avoid create multiple files per component, and avoid creating a tiny component that contain only a small part of the UI.
+- Don't create abstractions that hide too much logic and make the code feel like magic. It's better to repeat some steps than to leave developers wondering how a component works or why something behaves a certain way.
+- If you feel that you need to write a comment, please do it, but make sure that describe something that is not obvious from the code, for example a bussiness logic desission.
+
+---
+
+## 🧪 User ID and Favorites
+
+Each user gets a unique ID when they visit:
+
+- Stored in a cookie: `gwi-cats-__user`
+- Also saved in `localStorage`
+
+This allows both **server and client components** to access the user ID easily.  
+We use this to track and save favorite images per user.
+
+---
+
+## 🎨 Design & Tech Decisions
+
+- ⚙️ **Next.js 15**: For its file-based routing and RSC (React Server Components)
+- 💨 **Tailwind CSS**: Fast, flexible styling with a big community
+- 🧱 Custom UI components: We build our own instead of using external libraries
+- 🌈 **Neo-brutalism** design: A bold, fun theme that matches the playful nature of cats  
+  Learn more here: [Neo-brutalism Design](https://blog.hubspot.com/website/neo-brutalism)
+
+> We keep dependencies low we only install a package if it's truly needed.
+
+---
+
+## ⚡ Performance
+
+- All pages are **server-rendered**
+- **Next.js caching** is used to store API responses
+- Pages load fast, especially when revisiting
+- Perfect Lighthouse scores in:
+- Performance
+- Accessibility
+- Best Practices
+- SEO
+
+  🗼![lighthouse](https://private-user-images.githubusercontent.com/47026269/463845929-fa195d59-57b6-4e65-a565-b8ff181d3149.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTIwMDIwNTYsIm5iZiI6MTc1MjAwMTc1NiwicGF0aCI6Ii80NzAyNjI2OS80NjM4NDU5MjktZmExOTVkNTktNTdiNi00ZTY1LWE1NjUtYjhmZjE4MWQzMTQ5LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA3MDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwNzA4VDE5MDkxNlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmV0dXJlPTRlNTcwMDY2MzBiYThlZTllZDY5NGRlY2FjYzlkODVjY2I1NjQxMWEwMWQ0NjMwODY2YmJkMDliNzFjNmQ0YzEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.2tBsFB2tw8MEEUMPUObma53bINPdDeh4_seseaChUZg)
+
+---
+
+## 🧭 Roadmap
+
+- 🔐 Add real user authentication to maintain the favourites across browsers
+- 👍 Add a voting system for cat images
+- 🐶 Add support for a dog API too!
+
+---
+
+## 🤝 Contributing
+
+Have an idea or found a bug? Open an issue or a pull request. All help is welcome!
+
+---

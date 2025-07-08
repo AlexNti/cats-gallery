@@ -1,20 +1,28 @@
 import "./globals.css";
 import { Tabs } from "@/components/tabs";
-import { UserInitializer } from "@/components/userInitializer";
+import { UserInitializer } from "@/app/user/_components/userInitializer";
+import { AlertProvider } from "@/components/alert";
+import { Metadata } from "next";
 const tabItems = [
   {
     label: "Cat Images",
-    href: "/",
+    href: "/cats-gallery",
   },
   {
     label: "Cat Breeds",
     href: "/breeds",
   },
   {
-    label: "Favorites",
-    href: "/favorites",
+    label: "Favourites",
+    href: "/favourites",
   },
 ];
+
+export const metadata: Metadata = {
+  title: "React Cat Challenge",
+  description:
+    "Neo Brutal design Cat App - Discover amazing cats from all over the internet",
+};
 
 export default function RootLayout({
   children,
@@ -42,10 +50,14 @@ export default function RootLayout({
 
         <main className="flex-1 pb-2">
           <div className="container-neo">
-            <div className="section-neo">{children}</div>
+            <div className="section-neo">
+              <AlertProvider>
+                {children}
+                <UserInitializer />
+              </AlertProvider>
+            </div>
           </div>
         </main>
-        <UserInitializer />
 
         <footer className="bg-neo-black text-neo-white border-neo border-neo-white">
           <div className="container-neo">

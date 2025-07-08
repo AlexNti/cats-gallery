@@ -28,7 +28,7 @@ export type CatImage = {
   categories?: Category[];
 };
 
-export type CatFavorites = {
+export type CatFavourites = {
   id: string;
   image_id: string;
   sub_id: string;

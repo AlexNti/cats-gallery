@@ -1,5 +1,9 @@
+"use server";
+
 import { http, buildUrl } from "@/utils/http";
-import { Breed, CatFavorites, CatImage } from "@/types";
+import { Breed, CatFavourites, CatImage } from "@/types";
+import { revalidateTag } from "next/cache";
+import { cacheTags } from "./constants";
 
 type CatImagesParams = {
   page?: number;
@@ -7,35 +11,41 @@ type CatImagesParams = {
   mime_types?: string;
 };
 
+export const revalidateCache = async (cacheTag: string) => {
+  revalidateTag(cacheTag);
+};
+
 export const getCatsImagesList = async (params?: CatImagesParams) => {
   const url = buildUrl(
     "/images/search",
     params as Record<string, string | number | boolean>
   );
-  return http.get<CatImage[]>(url);
+  return http.get<CatImage[]>(url, { next: { revalidate: 600 } });
 };
 
 export const getCatById = async (id: string) => {
   const url = buildUrl("/images/" + id);
-  return http.get<CatImage>(url);
+  return http.get<CatImage>(url, { cache: "force-cache" });
 };
 
-type CatAddFavoritesParams = {
+export type CatAddFavouritesParams = {
   sub_id: string;
   image_id: string;
 };
 
-export const addCatToFavorites = async (params: CatAddFavoritesParams) => {
+export const addCatToFavourites = async (params: CatAddFavouritesParams) => {
   const url = buildUrl("/favourites");
   return http.post<{ id: string; message: "SUCCESS" }>(url, params);
 };
 
-type CatDeleteFavoritesParams = {
+export type CatDeleteFavouritesParams = {
   favourite_id: string;
+  image_id: string;
+  sub_id: string;
 };
 
-export const deleteCatFromFavorites = async (
-  params: CatDeleteFavoritesParams
+export const deleteCatFromFavourites = async (
+  params: CatDeleteFavouritesParams
 ) => {
   const url = buildUrl(`/favourites/${params.favourite_id}`);
   return http.delete<{ message: "SUCCESS" }>(url);
@@ -46,11 +56,19 @@ type GetFavouriteImagesParams = {
   page?: number;
   sub_id: string;
   image_id?: string;
+  order?: "DESC" | "ASC";
 };
 
 export const getFavouriteImages = async (params: GetFavouriteImagesParams) => {
   const url = buildUrl("/favourites", params);
-  return http.get<CatFavorites[]>(url);
+  const baseTag = `${cacheTags.favourites}-${params.sub_id}`;
+  const tags = [`${baseTag}${params.image_id ? `-${params.image_id}` : ""}`];
+  return http.get<CatFavourites[]>(url, {
+    next: {
+      tags,
+      revalidate: 120,
+    },
+  });
 };
 
 type GetBreedsParams = {
@@ -60,7 +78,7 @@ type GetBreedsParams = {
 
 export const getBreeds = async (params: GetBreedsParams) => {
   const url = buildUrl(`/breeds`, params);
-  return http.get<Breed[]>(url);
+  return http.get<Breed[]>(url, { cache: "force-cache" });
 };
 
 type GetImagesByBreedIdParams = {
@@ -70,5 +88,5 @@ type GetImagesByBreedIdParams = {
 
 export const getImagesByBreedId = async (params: GetImagesByBreedIdParams) => {
   const url = buildUrl(`/images/search`, params);
-  return http.get<CatImage[]>(url);
+  return http.get<CatImage[]>(url, { cache: "force-cache" });
 };

@@ -1,34 +1,36 @@
 "use client";
 
 import { CatImage } from "@/types";
-import { useCallback, useState } from "react";
 import { getCatsImagesList } from "@/app/_api";
 import { Button } from "@/components/button";
 import { useFetch } from "@/hooks/useFetch";
-import { Alert } from "@/components/alert";
-import { GET_CATS_IMAGES_LIST_LIMIT } from "@/app/(cat-list)/_constants";
+import { useAlert } from "@/components/alert";
+import {
+  GET_CATS_IMAGES_LIST_LIMIT,
+  GET_CATS_IMAGES_MIME_TYPES,
+} from "@/app/cats-gallery/_constants";
 import { Card } from "@/components/card";
+import { useLoadMore } from "@/hooks/useLoadMore";
 
-export const CardList = ({ cats }: { cats: CatImage[] }) => {
-  const [cards, setCards] = useState<CatImage[]>(cats);
-  const [page, setPage] = useState(1);
+export const ImagesList = ({ cats }: { cats: CatImage[] }) => {
+  const { items: cards, loadMore } = useLoadMore({
+    initialData: cats,
+    pageSize: GET_CATS_IMAGES_LIST_LIMIT,
+  });
+  const { showError } = useAlert();
+  const { loading, execute } = useFetch(getCatsImagesList);
 
-  const memoGetCatsImageList = useCallback(
-    () =>
-      getCatsImagesList({
-        page: page + 1, // To be honest it looks like the page prop is not used properly in the free version of the api
+  const handleLoadMore = async () => {
+    const { error } = await loadMore((page) =>
+      execute({
+        page,
         limit: GET_CATS_IMAGES_LIST_LIMIT,
-        mime_types: "jpg,png",
-      }),
-    [page]
-  );
-  const { loading, execute, error } = useFetch(memoGetCatsImageList);
+        mime_types: GET_CATS_IMAGES_MIME_TYPES,
+      })
+    );
 
-  const loadMore = async () => {
-    const { data } = await execute();
-    if (data) {
-      setCards([...cards, ...data]);
-      setPage(page + 1);
+    if (error) {
+      return showError(error.message);
     }
   };
 
@@ -44,8 +46,7 @@ export const CardList = ({ cats }: { cats: CatImage[] }) => {
            */
           <Card.RootLink
             href={{
-              pathname: "/",
-              query: { id: cat.id },
+              pathname: `/cats-gallery/${cat.id}`,
             }}
             key={`${cat.id}-${index}`}
           >
@@ -57,20 +58,20 @@ export const CardList = ({ cats }: { cats: CatImage[] }) => {
               className="object-cover"
             />
             <Card.Content className="p-neo-lg">
-              <Card.Title className="font-bold">Cat #{cat.id}</Card.Title>
+              <Card.Title className="font-bold truncate">
+                Cat #{cat.id}
+              </Card.Title>
             </Card.Content>
           </Card.RootLink>
         ))}
         {loading &&
           Array.from({ length: GET_CATS_IMAGES_LIST_LIMIT }).map((_, index) => (
-            <CardItemSkeleton key={index} />
+            <ImageItemSkeleton key={index} />
           ))}
       </div>
 
-      {error && <Alert type="error" message={error} />}
-
       <div className="text-center">
-        <Button variant="primary" onClick={loadMore} disabled={loading}>
+        <Button variant="primary" onClick={handleLoadMore} disabled={loading}>
           {loading ? "Loading..." : "Load More Cats"}
         </Button>
       </div>
@@ -78,7 +79,7 @@ export const CardList = ({ cats }: { cats: CatImage[] }) => {
   );
 };
 
-const CardItemSkeleton = () => {
+const ImageItemSkeleton = () => {
   return (
     <Card.Root className="animate-pulse">
       <div className="relative w-full h-48 overflow-hidden border-neo border-neo-black shadow-neo bg-neo-gray-300">
@@ -92,14 +93,12 @@ const CardItemSkeleton = () => {
   );
 };
 
-export const CardListSkeleton = () => {
+export const ImageListSkeleton = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-neo-lg mb-neo-xl">
       {Array.from({ length: GET_CATS_IMAGES_LIST_LIMIT }).map((_, index) => (
-        <CardItemSkeleton key={index} />
+        <ImageItemSkeleton key={index} />
       ))}
     </div>
   );
 };
-
-export default CardList;

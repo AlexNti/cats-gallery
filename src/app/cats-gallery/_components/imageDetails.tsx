@@ -1,16 +1,13 @@
 "use client";
 
 import { Modal } from "@/components/modal";
-import { CatImage, Breed } from "@/types";
+import { CatImage, Breed, CatFavourites } from "@/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { StarRating } from "@/components/starsRating";
-import { IconButton } from "@/components/iconButton";
-
 import Link from "next/link";
 import { Card } from "@/components/card";
-import { useFavourite } from "@/app/favorites/_hooks/useFavourite";
-import { getUserId } from "@/app/user/_utils";
+import { Favourite } from "@/app/favourites/_components/favouriteList";
 
 const BreedCard = ({ breed }: { breed: Breed }) => {
   const physicalTraits = [
@@ -50,12 +47,7 @@ const BreedCard = ({ breed }: { breed: Breed }) => {
     <Card.Root className="mb-neo-lg p-0">
       <Card.Content className="p-0">
         <div className="bg-neo-blue text-neo-white p-neo-lg border-b-2 border-neo-black">
-          <Link
-            href={{
-              pathname: "/breeds",
-              query: { id: breed.id, name: breed.name },
-            }}
-          >
+          <Link href={`/breeds/${breed.id}`}>
             <h4 className="text-neo-heading underline">{breed.name}</h4>
           </Link>
         </div>
@@ -114,27 +106,7 @@ const BreedCard = ({ breed }: { breed: Breed }) => {
   );
 };
 
-const Favorite = ({ imageId }: { imageId: string }) => {
-  const userId = getUserId();
-  const { isFavourited, isLoading, debouncedToggleFavorite } = useFavourite({
-    imageId,
-    subId: userId,
-  });
-
-  return (
-    <IconButton
-      loading={isLoading}
-      disabled={isLoading}
-      icon="heart"
-      onClick={debouncedToggleFavorite}
-      aria-label={isFavourited ? "Unfavorite cat" : "Favorite cat"}
-      variant="ghost"
-      color={isFavourited ? "neo-pink" : "neo-gray-400"}
-    />
-  );
-};
-
-export const ImageDetailsModal = ({ image }: { image: CatImage }) => {
+export const ImageDetailsModalSkeleton = () => {
   const router = useRouter();
 
   const onClose = () => {
@@ -146,7 +118,46 @@ export const ImageDetailsModal = ({ image }: { image: CatImage }) => {
       <Modal.Content>
         <Modal.Header>
           <div className="flex items-center gap-4 w-full">
-            <Favorite imageId={image.id} />
+            <div className="w-8 h-8 bg-neo-gray-200 rounded animate-pulse"></div>
+            <div className="h-6 bg-neo-gray-200 rounded w-24 animate-pulse"></div>
+            <Modal.Close onClick={onClose} />
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="space-y-neo-lg">
+            <div className="relative w-full h-80 mb-neo-lg">
+              <div className="w-full h-full bg-neo-gray-200 animate-pulse border-neo border-neo-black shadow-neo"></div>
+            </div>
+
+            <div>
+              <div className="h-6 bg-neo-gray-200 rounded w-48 mb-neo-lg animate-pulse"></div>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
+  );
+};
+
+export const ImageDetailsModal = ({
+  image,
+  favourite,
+}: {
+  image: CatImage;
+  favourite: CatFavourites | null;
+}) => {
+  const router = useRouter();
+
+  const onClose = () => {
+    router.push("/", { scroll: false });
+  };
+
+  return (
+    <Modal.Root isOpen={true} onClose={onClose}>
+      <Modal.Content>
+        <Modal.Header>
+          <div className="flex items-center gap-4 w-full">
+            <Favourite imageId={image.id} favourite={favourite} />
             <Modal.Title>Cat #{image.id}</Modal.Title>
             <Modal.Close onClick={onClose} />
           </div>

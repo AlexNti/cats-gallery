@@ -1,17 +1,12 @@
 import React from "react";
 import { Icon, IconProps } from "./icon";
-import { Button } from "./button";
+import { Button, ButtonProps } from "./button";
 
-type IconButtonProps = {
+type IconButtonProps = Omit<ButtonProps, "children"> & {
   icon: string;
-  onClick: () => void;
-  className?: string;
   size?: IconProps["size"];
-  disabled?: boolean;
-  "aria-label"?: string;
-  variant?: "primary" | "secondary" | "danger" | "success" | "ghost";
-  loading?: boolean;
   color?: "neo-pink" | "neo-red" | "neo-gray-400";
+  loading?: boolean;
 };
 
 export const IconButton: React.FC<IconButtonProps> = ({
@@ -24,6 +19,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   variant = "ghost",
   loading = false,
   color,
+  ...props
 }) => {
   const colorClass = color ? `text-${color}` : "";
 
@@ -34,6 +30,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       aria-label={ariaLabel}
       variant={variant}
       className={`inline-flex items-center justify-center p-2 ${colorClass} ${className}`}
+      {...props}
     >
       <Icon
         name={loading ? "spinner" : icon}
