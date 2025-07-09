@@ -50,6 +50,22 @@ This app is built with **Next.js 15**, **Tailwind CSS**, and uses a colorful **n
 
 ---
 
+## 🧪 How to run tests
+
+For headless running:
+
+```bash
+npm run tests:e2e
+```
+
+To run with the UI present:
+
+```bash
+npm run tests:e2e:ui
+```
+
+---
+
 ## 🗂️ Project Structure
 
 All main code is inside the `src/` folder. We split the code into two main types:
@@ -100,7 +116,7 @@ For example, a hook in `breeds/` can be used in `cats-gallery/`.
 
 ---
 
-## 🧪 User ID and Favorites
+## 👤 Fake authentication
 
 Each user gets a unique ID when they visit:
 
@@ -114,7 +130,7 @@ We use this to track and save favorite images per user.
 
 ## 🎨 Design & Tech Decisions
 
-- ⚙️ **Next.js 15**: For its file-based routing and RSC (React Server Components)
+- ⚙️ **Next.js 15**: For its file-based routing and React Server Components
 - 💨 **Tailwind CSS**: Fast, flexible styling with a big community
 - 🧱 Custom UI components: We build our own instead of using external libraries
 - 🌈 **Neo-brutalism** design: A bold, fun theme that matches the playful nature of cats  
