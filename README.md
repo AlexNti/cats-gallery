@@ -23,19 +23,31 @@ This app is built with **Next.js 15**, **Tailwind CSS**, and uses a colorful **n
 
 ## 🛠️ How to run locally
 
+### ⚠️❗ Get your API key from [https://thecatapi.com/](https://thecatapi.com/)
+
 1. Clone the repo and open the folder
-2. Create a `.env.local` file and add:
 
-   ```
-   NEXT_PUBLIC_API_URL=your_api_url
-   NEXT_PUBLIC_API_VERSION=your_api_version
-   NEXT_PUBLIC_API_KEY=your_api_key
-   ```
-
-3. Install dependencies:
+2. Install dependencies:
 
    ```bash
    npm install
+   ```
+
+3. Setup your ENV variables at .env.local:
+
+   **Option 1: Automated Setup**
+
+   ```bash
+   npm run setup-env
+   ```
+
+   **Option 2: Manual Setup**
+   Create a `.env.local` file in the root directory with the following variables:
+
+   ```
+   NEXT_PUBLIC_API_URL=https://api.thecatapi.com
+   NEXT_PUBLIC_API_VERSION=v1
+   NEXT_PUBLIC_API_KEY=your_api_key_here
    ```
 
 4. Start the app:
@@ -46,11 +58,13 @@ This app is built with **Next.js 15**, **Tailwind CSS**, and uses a colorful **n
 
 5. Open [http://localhost:3000](http://localhost:3000)
 
-👉 Or try the live version: [https://courageous-trifle-f9f9db.netlify.app/](https://courageous-trifle-f9f9db.netlify.app/)
+> Or try the live version: [https://courageous-trifle-f9f9db.netlify.app/](https://courageous-trifle-f9f9db.netlify.app/)
 
 ---
 
 ## 🧪 How to run tests
+
+> ⚠️ Before running the tests make sure that the local server is running localhost:3000
 
 For headless running:
 
@@ -84,7 +98,7 @@ All main code is inside the `src/` folder. We split the code into two main types
 
 This follows the **Next.js 15 app router structure**.
 
-Each folder represents a page or feature, like a module.  
+Each folder represents a page or feature, like a module.
 Main folders:
 
 - `breeds/` – Shows breed list and details
@@ -102,7 +116,7 @@ Each module can include:
 - `default.tsx` – Used for parallel routes, more at [Parallel Routes](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes)
 - `page.tsx` – The server-rendered page built using the module's components
 
-These modules **can share logic with each other** if needed.  
+These modules **can share logic with each other** if needed.
 For example, a hook in `breeds/` can be used in `cats-gallery/`.
 
 ---
@@ -123,7 +137,7 @@ Each user gets a unique ID when they visit:
 - Stored in a cookie: `gwi-cats-__user`
 - Also saved in `localStorage`
 
-This allows both **server and client components** to access the user ID easily.  
+This allows both **server and client components** to access the user ID easily.
 We use this to track and save favorite images per user.
 
 ---
@@ -133,7 +147,7 @@ We use this to track and save favorite images per user.
 - ⚙️ **Next.js 15**: For its file-based routing and React Server Components
 - 💨 **Tailwind CSS**: Fast, flexible styling with a big community
 - 🧱 Custom UI components: We build our own instead of using external libraries
-- 🌈 **Neo-brutalism** design: A bold, fun theme that matches the playful nature of cats  
+- 🌈 **Neo-brutalism** design: A bold, fun theme that matches the playful nature of cats
   Learn more here: [Neo-brutalism Design](https://blog.hubspot.com/website/neo-brutalism)
 
 > We keep dependencies low we only install a package if it's truly needed.
@@ -160,11 +174,5 @@ We use this to track and save favorite images per user.
 - 🔐 Add real user authentication to maintain the favourites across browsers
 - 👍 Add a voting system for cat images
 - 🐶 Add support for a dog API too!
-
----
-
-## 🤝 Contributing
-
-Have an idea or found a bug? Open an issue or a pull request. All help is welcome!
 
 ---
