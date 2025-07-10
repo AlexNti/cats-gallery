@@ -26,16 +26,18 @@ export function useFetch<T = unknown, Args = unknown>(
 
       const result = await fetchFn(args as Args);
 
+      if (!isMounted.current) return result;
+
       setLoading(false);
 
       if (result.error) {
         setError(result.error.message);
         setData(null);
-      } else {
-        if (isMounted.current) {
-          setData(result.data);
-        }
+        return result;
       }
+
+      setData(result.data);
+
       return result;
     },
     [fetchFn]
