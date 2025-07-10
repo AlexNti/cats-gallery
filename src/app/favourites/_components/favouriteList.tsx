@@ -46,7 +46,11 @@ export const Favourite = ({
       payload: CatAddFavouritesParams | CatDeleteFavouritesParams
     ) => {
       try {
-        if (state.data && isFavourite && "favourite_id" in payload) {
+        if (state.data) {
+          if (!("favourite_id" in payload) || !payload.favourite_id) {
+            showError("Favourite ID not found");
+            return { data: state.data, error: "Favourite ID not found" };
+          }
           const res = await deleteCatFromFavourites(payload);
 
           if (res.error) {
