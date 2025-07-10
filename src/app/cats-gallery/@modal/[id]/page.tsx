@@ -3,7 +3,7 @@ import {
   ImageDetailsModal,
   ImageDetailsModalSkeleton,
 } from "@/app/cats-gallery/_components/imageDetails";
-import { getUserId } from "@/app/user/_server.utils";
+import { getOrCreateUserId } from "@/app/user/_server.utils";
 import { Error, ErrorAction } from "@/components/server.error";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -28,7 +28,7 @@ export default async function ModalPage({
 }
 
 async function ImageDetailsLoader({ id }: { id: string }) {
-  const userId = await getUserId();
+  const userId = await getOrCreateUserId();
   const imageDetailsResponse = await getCatById(id);
   const favouritedResponse = await getFavouriteImages({
     image_id: id,

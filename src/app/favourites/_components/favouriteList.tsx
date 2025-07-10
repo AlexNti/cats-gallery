@@ -17,7 +17,7 @@ import {
 import { useFetch } from "@/hooks/useFetch";
 import { Button } from "@/components/button";
 import { NotFound } from "@/components/notFound";
-import { getUserId } from "@/app/user/_utils";
+import { getOrCreateUserId } from "@/app/user/_client.utils";
 import { useAlert } from "@/components/alert";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -36,9 +36,9 @@ export const Favourite = ({
   onFavouriteRemoved?: () => void;
 }) => {
   const { showError } = useAlert();
-  const userId = getUserId();
   const favouriteId = favourite?.id;
   const isFavourite = favouriteId !== undefined;
+  const userId = getOrCreateUserId();
 
   const [state, formAction, isPending] = useActionState(
     async (
@@ -100,9 +100,9 @@ export const FavouritesList = ({
 }: {
   favourites: CatFavourites[];
 }) => {
-  const userId = getUserId();
   const { loading, execute } = useFetch(getFavouriteImages);
   const { showError } = useAlert();
+  const userId = getOrCreateUserId();
 
   const {
     items: cards,
