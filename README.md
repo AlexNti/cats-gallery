@@ -130,15 +130,30 @@ For example, a hook in `breeds/` can be used in `cats-gallery/`.
 
 ---
 
-## 👤 Fake authentication
+## 👤❤️ Pesonalized Favourites
 
-Each user gets a unique ID when they visit:
+We use a unique user ID to store favorites per user. Here's why this matters:
 
-- Stored in a cookie: `gwi-cats-__user`
-- Also saved in `localStorage`
+### 🎯 **Personalized Experience**
 
-This allows both **server and client components** to access the user ID easily.
-We use this to track and save favorite images per user.
+- Each user gets their own collection of favorite cat images
+- Your favorites persist when you close and reopen your browser
+
+### 🚫 **Without User IDs**
+
+- No personalization, all users would share the same favorites list
+- You might lose your favorite images when others add/remove items
+
+### 💾 **How It Works**
+
+- Your unique ID is stored in the `gwi-cats-__user` cookie
+- The middleware automatically creates a new ID if you don't have one
+- You can save your favorites by backing up your user ID from the cookie
+- If you delete the cookie, you'll get a fresh start with a new user ID
+
+You can try to delete your cookie, you will see that all you favourites is gone,
+i recommend keeping `gwi-cats-__user` somewhere safe so you can reuse it in different
+browser and still see the same favourites.
 
 ---
 
