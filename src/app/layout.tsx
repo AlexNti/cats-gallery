@@ -5,7 +5,7 @@ import { AlertProvider } from "@/components/alert";
 import { Metadata } from "next";
 const tabItems = [
   {
-    label: "Cat Images",
+    label: "Cats Gallery",
     href: "/cats-gallery",
   },
   {
