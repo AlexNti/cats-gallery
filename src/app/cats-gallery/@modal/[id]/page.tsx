@@ -3,10 +3,10 @@ import {
   ImageDetailsModal,
   ImageDetailsModalSkeleton,
 } from "@/app/cats-gallery/_components/imageDetails";
-import { getOrCreateUserId } from "@/app/user/_server.utils";
 import { Error, ErrorAction } from "@/components/server.error";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { getUserId } from "@/app/user/_server.utils";
 
 async function retryAction() {
   "use server";
@@ -28,7 +28,18 @@ export default async function ModalPage({
 }
 
 async function ImageDetailsLoader({ id }: { id: string }) {
-  const userId = await getOrCreateUserId();
+  const userId = await getUserId();
+  if (!userId) {
+    return (
+      <Error
+        title="There was an error fetching your user id"
+        message="User ID not found"
+      >
+        <ErrorAction action={retryAction} label="Please try again" />
+      </Error>
+    );
+  }
+
   const imageDetailsResponse = await getCatById(id);
   const favouritedResponse = await getFavouriteImages({
     image_id: id,

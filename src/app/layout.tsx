@@ -1,8 +1,9 @@
 import "./globals.css";
 import { Tabs } from "@/components/tabs";
-import { UserInitializer } from "@/app/user/_components/userInitializer";
 import { AlertProvider } from "@/components/alert";
 import { Metadata } from "next";
+import { UserInitializer } from "./user/_components/userInitializer";
+
 const tabItems = [
   {
     label: "Cats Gallery",
@@ -51,10 +52,7 @@ export default function RootLayout({
         <main className="flex-1 pb-2">
           <div className="container-neo">
             <div className="section-neo">
-              <AlertProvider>
-                {children}
-                <UserInitializer />
-              </AlertProvider>
+              <AlertProvider>{children}</AlertProvider>
             </div>
           </div>
         </main>

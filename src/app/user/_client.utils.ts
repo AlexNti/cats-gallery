@@ -1,7 +1,6 @@
 "use client";
 
-import { USER_ID_STORAGE_KEY } from "@/app/favourites/_constants";
-import { COOKIE_MAX_AGE } from "@/app/user/_constants";
+import { COOKIE_MAX_AGE, COOKIE_USER_ID_KEY } from "@/app/user/_constants";
 import { v4 as uuidv4 } from "uuid";
 
 const getCookie = (name: string): string | null => {
@@ -16,16 +15,16 @@ const getCookie = (name: string): string | null => {
 const createCookie = (name: string, value: string): string => {
   if (typeof document === "undefined") return value;
 
-  document.cookie = `${name}=${value}; max-age=${COOKIE_MAX_AGE}; path=/; SameSite=Lax`;
+  document.cookie = `${name}=${value}; max-age=${COOKIE_MAX_AGE}; path=/; SameSite=lax`;
   return value;
 };
 
 export const getOrCreateUserId = (): string => {
-  const userId = getCookie(USER_ID_STORAGE_KEY);
+  const userId = getCookie(COOKIE_USER_ID_KEY);
 
   if (userId) {
     return userId;
   }
 
-  return createCookie(USER_ID_STORAGE_KEY, uuidv4());
+  return createCookie(COOKIE_USER_ID_KEY, uuidv4());
 };

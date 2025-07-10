@@ -46,7 +46,7 @@ export const Favourite = ({
       payload: CatAddFavouritesParams | CatDeleteFavouritesParams
     ) => {
       try {
-        if (state.data && "favourite_id" in payload) {
+        if (state.data && isFavourite && "favourite_id" in payload) {
           const res = await deleteCatFromFavourites(payload);
 
           if (res.error) {
@@ -187,7 +187,7 @@ export const FavouritesList = ({
         </AnimatePresence>
         {loading &&
           Array.from({ length: GET_FAVOURITE_IMAGES_LIMIT }).map((_, index) => (
-            <FavouritesListSkeleton key={index} />
+            <FavouriteCardSkeleton key={index} />
           ))}
       </div>
 

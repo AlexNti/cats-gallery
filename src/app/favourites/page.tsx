@@ -10,8 +10,7 @@ import {
   GET_FAVOURITE_IMAGES_LIMIT,
   GET_FAVOURITE_IMAGES_ORDER,
 } from "@/app/favourites/_constants";
-import { cookies } from "next/headers";
-import { USER_ID_STORAGE_KEY } from "@/app/favourites/_constants";
+import { getUserId } from "@/app/user/_server.utils";
 import { Suspense } from "react";
 
 async function retryAction() {
@@ -33,8 +32,18 @@ export default async function FavouritesPage() {
 }
 
 async function FavouritesLoader() {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get(USER_ID_STORAGE_KEY)?.value || "user";
+  const userId = await getUserId();
+  if (!userId) {
+    return (
+      <Error
+        title="There was an error fetching your user id"
+        message="User ID not found"
+      >
+        <ErrorAction action={retryAction} label="Please try again" />
+      </Error>
+    );
+  }
+
   const response = await getFavouriteImages({
     limit: GET_FAVOURITE_IMAGES_LIMIT,
     sub_id: userId,
