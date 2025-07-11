@@ -3,13 +3,7 @@
 import { IconButton } from "@/components/iconButton";
 import { Card } from "@/components/card";
 import { CatFavourites } from "@/types";
-import {
-  addCatToFavourites,
-  CatAddFavouritesParams,
-  CatDeleteFavouritesParams,
-  deleteCatFromFavourites,
-  getFavouriteImages,
-} from "@/app/_api";
+import { getFavouriteImages } from "@/app/_api";
 import {
   GET_FAVOURITE_IMAGES_LIMIT,
   GET_FAVOURITE_IMAGES_ORDER,
@@ -25,6 +19,7 @@ import { revalidateCache } from "@/app/_api";
 import { cacheTags } from "@/app/_api/constants";
 import { useLoadMore } from "@/hooks/useLoadMore";
 import { useActionState } from "react";
+import { toggleCatFavourite } from "../_actions";
 
 export const Favourite = ({
   imageId,
@@ -41,59 +36,51 @@ export const Favourite = ({
   const userId = getOrCreateUserId();
 
   const [state, formAction, isPending] = useActionState(
-    async (
-      state: { data: boolean; error: string | null },
-      payload: CatAddFavouritesParams | CatDeleteFavouritesParams
-    ) => {
-      try {
-        if (state.data) {
-          if (!("favourite_id" in payload) || !payload.favourite_id) {
-            showError("Favourite ID not found");
-            return { data: state.data, error: "Favourite ID not found" };
-          }
-          const res = await deleteCatFromFavourites(payload);
+    async (state: {
+      isFavourite: boolean;
+      favouriteId: string | undefined;
+    }) => {
+      const res = await toggleCatFavourite({
+        isFavourite: state.isFavourite,
+        favouriteId: state.favouriteId,
+        imageId,
+        userId,
+      });
 
-          if (res.error) {
-            showError(res.error.message);
-            return { data: state.data, error: res.error.message };
-          }
-          onFavouriteRemoved?.();
-          return { data: false, error: null };
-        }
+      /**
+       * We want always to revalidate the cache even if there is an error in the response,
+       * the reason is the data might be stale, for example we might have remove the favourite from another
+       * browser and our UI hasn't been updated yet.
+       */
+      revalidateCache(`${cacheTags.favourites}-${userId}`);
+      revalidateCache(`${cacheTags.favourites}-${userId}-${imageId}`);
 
-        const res = await addCatToFavourites(payload);
-        if (res.error) {
-          showError(res.error.message);
-          return { data: state.data, error: res.error.message };
-        }
-
-        return { data: true, error: null };
-      } finally {
-        revalidateCache(`${cacheTags.favourites}-${userId}-${imageId}`);
-        revalidateCache(`${cacheTags.favourites}-${userId}`);
+      if (res.error) {
+        showError(res.error);
+        return { ...state };
       }
+
+      if (!res.isFavourite) {
+        onFavouriteRemoved?.();
+      }
+
+      return { isFavourite: res.isFavourite, favouriteId: res.favouriteId };
     },
 
-    { data: isFavourite, error: null }
+    { isFavourite, favouriteId }
   );
 
   return (
     <form>
       <IconButton
-        formAction={() =>
-          formAction({
-            image_id: imageId,
-            sub_id: userId,
-            favourite_id: favouriteId,
-          })
-        }
+        formAction={formAction}
         type="submit"
         loading={isPending}
         disabled={isPending}
         icon="heart"
-        aria-label={state.data ? "Unfavourite cat" : "Favourite cat"}
+        aria-label={state.isFavourite ? "Unfavourite cat" : "Favourite cat"}
         variant="ghost"
-        color={state.data ? "neo-pink" : "neo-gray-400"}
+        color={state.isFavourite ? "neo-pink" : "neo-gray-400"}
       />
     </form>
   );
