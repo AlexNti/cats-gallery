@@ -4,7 +4,6 @@ type PageContainerProps = {
   title: string;
   description?: string;
   children: React.ReactNode;
-  className?: string;
 };
 
 const PageContainer: React.FC<PageContainerProps> = ({
