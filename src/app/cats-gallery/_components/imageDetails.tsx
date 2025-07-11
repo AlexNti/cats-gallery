@@ -110,7 +110,7 @@ export const ImageDetailsModalSkeleton = () => {
   const router = useRouter();
 
   const onClose = () => {
-    router.push("/", { scroll: false });
+    router.push("/cats-gallery", { scroll: false });
   };
 
   return (
@@ -149,7 +149,7 @@ export const ImageDetailsModal = ({
   const router = useRouter();
 
   const onClose = () => {
-    router.push("/", { scroll: false });
+    router.push("/cats-gallery", { scroll: false });
   };
 
   return (

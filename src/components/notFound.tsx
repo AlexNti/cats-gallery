@@ -15,7 +15,7 @@ export const NotFound = ({
         <h3 className="text-neo-xl font-bold mb-neo-sm">{title}</h3>
         <p className="text-neo-gray-600 mb-neo-lg">{message}</p>
       </div>
-      <Link href="/">
+      <Link href="/cats-gallery">
         <Button variant="primary">Browse Cats</Button>
       </Link>
     </div>
