@@ -2,7 +2,6 @@ import "./globals.css";
 import { Tabs } from "@/components/tabs";
 import { AlertProvider } from "@/components/alert";
 import { Metadata } from "next";
-import { UserInitializer } from "./user/_components/userInitializer";
 
 const tabItems = [
   {
