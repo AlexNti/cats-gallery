@@ -19,7 +19,6 @@ export function useLoadMore<T extends { id: string }>({
     fetchPage: (page: number) => Promise<ApiSuccessOrError<T[]>>
   ) => {
     const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
 
     const { data, error } = await fetchPage(nextPage);
 
@@ -30,6 +29,11 @@ export function useLoadMore<T extends { id: string }>({
     const existingIds = new Set(items.map((item) => item.id));
     const uniqueData = data.filter((item) => !existingIds.has(item.id));
 
+    /**
+     * If uniqueData is empty it means that we have reach the end of the available data.
+     * Since the pagination api does not provide total number of items, this is the way to know
+     * that we have reached the end of the pagination.
+     */
     if (uniqueData.length === 0) {
       setHasMore(false);
       return {
@@ -40,12 +44,13 @@ export function useLoadMore<T extends { id: string }>({
       };
     }
 
-    const updatedItems = [...items, ...uniqueData];
-    setItems(updatedItems);
-
+    setCurrentPage(nextPage);
     if (uniqueData.length < pageSize) {
       setHasMore(false);
     }
+
+    const updatedItems = [...items, ...uniqueData];
+    setItems(updatedItems);
 
     return {
       data: updatedItems,
